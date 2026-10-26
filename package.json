@@ -1,0 +1,19 @@
+{
+  "name": "blogmigrate-naver-tistory-to-blogger",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "start:open": "node server.js --open",
+    "start:dist": "node server.js --dist",
+    "build": "node build.js",
+    "build:debug": "OBF=0 node build.js"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.1",
+    "terser": "^5.31.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

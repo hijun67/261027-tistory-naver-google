@@ -1,0 +1,38 @@
+[build]
+  command = "npm install && npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+  # [크레딧 절약] public / netlify 폴더, 빌드 스크립트, 이 파일이 바뀌지 않은 커밋(README 수정 등)은
+  # 빌드·배포를 건너뜁니다. (건너뛴 빌드는 프로덕션 배포로 세지 않습니다)
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- public netlify netlify.toml build.js package.json"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+# [크레딧 절약] 상단 이미지를 방문자 브라우저에 일주일간 저장 → 재방문 시 대역폭 절약
+[[headers]]
+  for = "/1234.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/1234mobile.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200

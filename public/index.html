@@ -1,0 +1,563 @@
+<!doctype html>
+<!-- build: 2026-10-26 · naver+tistory-tabs · 이 줄이 보이면 최신 index.html 이 배포된 것입니다 -->
+<html lang="ko">
+<head>
+<meta name="monetag" content="1bc33d19827a8f0ee573c0598baf0360">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='28' fill='%231447c8'/%3E%3Cg fill='none' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 50h50M64 34l16 16-16 16'/%3E%3Cpath d='M90 82H40M56 66L40 82l16 16'/%3E%3C/g%3E%3C/svg%3E">
+<title>네이버·티스토리 블로그 → 구글 블로거 이전</title>
+<meta name="description" content="네이버·티스토리 블로그 글을 내 구글 블로거로 옮겨 주는 무료 웹 도구. 변환은 내 브라우저에서 처리되며 글 내용과 로그인 정보는 서버에 저장되지 않습니다.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --bg:#f7f8fb;--card:#fff;--line:#e8ebf1;--soft:#f3f5f9;
+    --txt:#141b2d;--sub:#667085;--mute:#98a2b3;
+    --pri:#1447c8;--pri-soft:#e8efff;
+    --ok:#16a34a;--ok-soft:#e7f7ee;--bad:#dc2626;--run:#1d4ed8;
+    --amber-bg:#fff7e0;--amber-line:#fde7a8;--amber-txt:#b45309;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 6px 20px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.65 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--pri)}
+  .ic{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:0 0 auto}
+  .ic.fill{fill:currentColor;stroke:none}
+
+  /* 상단 내비 */
+  .topbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+  .topbar-in{max-width:1290px;margin:0 auto;padding:0 24px;height:68px;display:flex;align-items:center;gap:14px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;text-decoration:none;color:var(--txt)}
+  .logo-mark{width:38px;height:38px;border-radius:11px;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;font-size:19px}
+  .logo small{font-weight:500;font-size:12.5px;color:var(--sub);margin-left:2px}
+  .pill-ok{display:inline-flex;align-items:center;gap:6px;background:var(--ok-soft);color:#166534;border:1px solid #c9eed8;border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:600}
+  .pill-ok::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  .nav{margin-left:auto;display:flex;gap:4px}
+  .nav a{padding:8px 13px;border-radius:8px;text-decoration:none;color:var(--sub);font-weight:600;font-size:14px}
+  .nav a:hover{background:var(--soft);color:var(--txt)}
+  .nav a.on{background:var(--pri-soft);color:var(--pri)}
+
+  /* 본문 */
+  main{max-width:900px;margin:0 auto;padding:36px 16px 20px;display:grid;gap:18px}
+  .hero{padding:0 0 4px}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--pri-soft);color:var(--pri);border-radius:999px;padding:5px 13px;font-size:12.5px;font-weight:700}
+  .hero h1{margin:14px 0 8px;font-size:38px;line-height:1.2;letter-spacing:-.02em;font-weight:800}
+  .hero h1 .arr{color:var(--pri);margin:0 4px}
+  .hero p{margin:0;color:var(--sub);font-size:15px}
+
+  section,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;box-shadow:var(--shadow)}
+  section h2{margin:0;font-size:18px;font-weight:800;display:flex;align-items:center;gap:12px}
+  .head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .num-dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;flex:0 0 auto}
+  .num-dot.g{background:var(--ok-soft);color:var(--ok)}
+  .num-dot.o{background:#fff1e0;color:#ea7a0c}
+  .num-dot.b{background:var(--pri-soft);color:var(--pri)}
+  .tag{background:var(--pri-soft);color:var(--pri);border-radius:999px;padding:3px 12px;font-size:12.5px;font-weight:700}
+  .tag.amber{background:#fff4dc;color:var(--amber-txt)}
+
+  .warn{display:flex;gap:14px;background:linear-gradient(180deg,#fffaf0,var(--amber-bg));border:1px solid var(--amber-line);border-radius:16px;padding:20px 24px;color:var(--amber-txt);box-shadow:var(--shadow)}
+  .warn .wi{width:38px;height:38px;border-radius:10px;background:#fdeab4;display:grid;place-items:center;font-size:21px;flex:0 0 auto}
+  .warn strong{display:block;font-size:17px;margin-bottom:3px}
+  .warn div{font-size:14.5px}
+
+  /* 서비스 소개 */
+  details.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary h2 .ico{width:30px;height:30px;border-radius:9px;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center}
+  details.fold>summary .chev{color:var(--mute);transition:transform .2s}
+  details.fold[open]>summary .chev{transform:rotate(180deg)}
+  .intro p{margin:14px 0}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .feat div{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:14px}
+  .feat .ic{color:var(--pri);font-size:17px}
+  .feat .ic.g{color:var(--ok)}
+
+  label{display:block;font-size:14px;font-weight:700;color:var(--txt);margin:0 0 8px}
+  input[type=text],input[type=number],select{width:100%;padding:12px 14px;border:1px solid transparent;background:var(--soft);border-radius:11px;font:inherit;color:var(--txt);outline:none;transition:border .15s,background .15s}
+  input[type=text]:focus,input[type=number]:focus,select:focus{border-color:var(--pri);background:#fff}
+  select{appearance:none;-webkit-appearance:none;padding-right:40px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+  .field{position:relative}
+  .field .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mute)}
+  .field input{padding-left:40px}
+
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .row>*{flex:1 1 220px}
+  .row>.fit{flex:0 0 auto}
+
+  button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit;font-weight:700;font-size:14px;color:var(--txt);cursor:pointer;transition:filter .15s,background .15s}
+  button:hover:not(:disabled){filter:brightness(.97)}
+  button.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+  button.danger{color:var(--bad);background:#fff5f5;border-color:#ffe0e0}
+  button.ghost{background:var(--soft);border-color:transparent;color:var(--sub);font-weight:600}
+  button.google{background:#e3ecff;border-color:#e3ecff;color:var(--txt);width:100%}
+  button:disabled{opacity:.5;cursor:not-allowed}
+
+  .hint{font-size:12.5px;color:var(--sub);margin:8px 0 0}
+  .status{font-size:13px;margin-top:10px;color:var(--sub)}
+  .ok{color:var(--ok)} .bad{color:var(--bad)} .run{color:var(--run)}
+
+  /* 옵션 */
+  details.opt>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px}
+  details.opt>summary::-webkit-details-marker{display:none}
+  details.opt>summary .tri{color:var(--sub);font-size:12px;transition:transform .2s}
+  details.opt[open]>summary .tri{transform:rotate(90deg)}
+  details.opt>summary b{font-size:18px;font-weight:800}
+  details.opt>summary span.sm{color:var(--mute);font-size:12.5px}
+  details.opt>summary .more{margin-left:auto;color:var(--pri);font-size:13px;font-weight:700}
+  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 16px;margin-top:14px}
+  .opts label.chk{display:flex;gap:8px;align-items:center;color:var(--txt);font-size:14px;font-weight:500;margin:4px 0}
+  .opts .num{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--txt);margin:4px 0}
+  .opts .num input{width:80px;padding:6px 9px}
+  input[type=checkbox]{width:17px;height:17px;accent-color:var(--pri);cursor:pointer}
+  #optLabels{margin-top:2px}
+  #optBody label[for=optLabels]{margin-top:14px}
+  .opt-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .opt-head b{font-size:18px;font-weight:800}
+  .opt-head .sm{color:var(--mute);font-size:12.5px}
+  .opt-head .opt-toggle{margin-left:auto}
+
+  /* 글 선택 */
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--soft);border-radius:12px;padding:10px 12px;margin-bottom:14px}
+  .toolbar button{padding:8px 13px;font-size:13.5px;background:#fff;border-color:transparent}
+  .toolbar #btnFirstN{background:var(--pri-soft);color:var(--pri)}
+  .toolbar input[type=number]{width:62px;padding:8px 10px;background:#fff;text-align:center;font-weight:700}
+  #summary{margin-left:auto;color:var(--sub);font-size:13px}
+  #summary b{color:var(--txt)}
+
+  .tablewrap{max-height:430px;overflow:auto;border-radius:12px;background:var(--soft);padding:0 6px 6px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{position:sticky;top:0;background:var(--soft);z-index:1;font-size:13px;font-weight:700;color:var(--sub);padding:12px 10px;text-align:left}
+  td{padding:14px 10px;background:#fff;border-bottom:1px solid var(--line);text-align:left}
+  tbody tr:first-child td:first-child{border-top-left-radius:10px}
+  tbody tr:first-child td:last-child{border-top-right-radius:10px}
+  tbody tr:last-child td:first-child{border-bottom-left-radius:10px}
+  tbody tr:last-child td:last-child{border-bottom-right-radius:10px}
+  td.d{font:13px ui-monospace,Consolas,monospace;color:var(--sub);white-space:nowrap}
+  td.t{font-weight:700;word-break:keep-all}
+  td:last-child{color:var(--mute);font-weight:600;font-size:13px;white-space:nowrap}
+  tr.done td.t{color:var(--mute);text-decoration:line-through;font-weight:600}
+  tr.done td.d{color:var(--mute)}
+  tr.done td:last-child{color:var(--ok)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  .actions .push{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .bar{height:8px;background:#e8ebf1;border-radius:6px;overflow:hidden;margin-top:16px}
+  .bar>div{height:100%;width:0;background:var(--pri);transition:width .2s}
+  .note{display:flex;gap:10px;align-items:center;background:var(--pri-soft);color:#35508f;border-radius:11px;padding:12px 15px;font-size:13px;margin-top:16px}
+
+  /* 로그 터미널 */
+  .term{background:#0b1220;border-radius:16px;padding:18px 22px 20px;box-shadow:var(--shadow)}
+  .term-head{display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid #1d2740;margin-bottom:12px;color:#8fa0bf;font:12.5px ui-monospace,Consolas,monospace}
+  .dots{display:flex;gap:7px;margin-right:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+  .term-head .live{margin-left:auto;color:#4ade80;display:flex;align-items:center;gap:6px}
+  .term-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#4ade80}
+  #log{background:transparent;color:#dbe4f5;font:13px/1.8 ui-monospace,Consolas,monospace;padding:0;max-height:260px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+  #log .E{color:#fca5a5} #log .W{color:#fcd34d}
+
+  /* 소스 전환 탭 (네이버 / 티스토리) */
+  .tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow);margin:0 0 16px}
+  .tabs .tab{flex:1;border:0;background:transparent;padding:13px 10px;border-radius:10px;font:inherit;font-size:15px;font-weight:700;color:var(--sub);cursor:pointer;box-shadow:none}
+  .tabs .tab:hover{background:var(--soft);color:var(--txt)}
+  .tabs .tab.on{background:var(--pri);color:#fff}
+  .tabs .tab:disabled{opacity:.55;cursor:not-allowed}
+  [hidden]{display:none!important}
+
+  /* 광고 영역
+     - 라벨과 <script> 외에 실제 광고 요소(iframe, div 등)가 생겼을 때만 표시
+     - 광고가 로드되지 않거나 차단되면 '광고' 글자만 있는 빈 카드가 남지 않고 자동으로 숨김 */
+  .ad-slot{text-align:center;overflow:hidden}
+  .ad-slot:not(:has(> :not(.ad-label):not(script):not(style))){display:none}
+  .ad-label{display:block;font-size:11px;color:var(--mute);margin-bottom:6px}
+
+  /* 상단 배너 (테이블 방식 · 이미지 파일 없음)
+     - 위쪽 전역 td 규칙(흰 배경, 하단 선, td:last-child 글자 크기 등)을 덮어쓰기 위해 이 블록은 td 규칙들보다 아래에 둡니다 */
+  table.site-hero{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background-color:#1447c8;background-image:linear-gradient(135deg,#1447c8 0%,#2563eb 100%);color:#fff;font-size:15px}
+  table.site-hero td{background:transparent;border:0;padding:34px 36px;vertical-align:middle;color:#fff;font-size:inherit;font-weight:inherit;white-space:normal;text-align:left}
+  table.site-hero td.hero-ic{width:96px;padding-right:0}
+  .hero-ic span{display:grid;place-items:center;width:84px;height:84px;border-radius:22px;background:#fff;color:#1447c8}
+  .hero-ic svg{width:48px;height:48px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .hero-site{font-size:15px;font-weight:700;opacity:.9;letter-spacing:.01em}
+  .hero-main{font-size:38px;font-weight:800;line-height:1.25;letter-spacing:-.02em;margin:4px 0 6px}
+  .hero-main i{font-style:normal;margin:0 8px;opacity:.9}
+  .hero-sub{font-size:15px;font-weight:500;opacity:.85}
+
+  /* 카카오채널 안내 */
+  .kakao-box{max-width:900px;margin:0 auto 18px;padding:0 16px}
+  .kakao-in{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;box-shadow:var(--shadow)}
+  .kakao-in strong{display:block;font-size:16px;margin-bottom:2px}
+  .kakao-in p{margin:0;color:var(--sub);font-size:13.5px}
+  .kakao-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .kakao-btns a{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:11px;font-weight:700;font-size:14px;text-decoration:none;border:1px solid #f2d900;background:#fee500;color:#191919}
+  .kakao-btns a.sub{background:#fff;border-color:var(--line);color:var(--txt)}
+  .kakao-btns a:hover{filter:brightness(.97)}
+
+  /* 푸터 */
+  .foot{max-width:900px;margin:0 auto;padding:10px 16px 28px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;color:var(--sub);font-size:13px}
+  .foot a{color:var(--sub);text-decoration:none;margin-right:10px}
+  .foot a:hover{text-decoration:underline}
+  .bottombar{background:#fff;border-top:1px solid var(--line);padding:22px 24px}
+  .bottombar-in{max-width:1290px;margin:0 auto;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+  .bottombar a{color:var(--sub);text-decoration:none;margin-left:22px}
+  .bottombar small{display:block;margin-top:2px;color:var(--mute)}
+
+  /* 시작 버튼 광고 모달 */
+  .ad-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9999}
+  .ad-modal[hidden]{display:none}
+  .ad-modal-box{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:22px;max-height:90vh;overflow:auto}
+  .ad-modal-box h3{margin:0 0 6px;font-size:18px}
+  .ad-modal-box .ad-slot{margin:12px 0;border:1px dashed var(--line);border-radius:10px;padding:8px;min-height:100px}
+  .ad-modal-box .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+
+  @media(max-width:860px){.nav,.topbar .pill-ok{display:none}}
+  @media(max-width:640px){
+    table.site-hero td{padding:22px 18px}
+    table.site-hero td.hero-ic{width:64px;padding-right:0}
+    .hero-ic span{width:52px;height:52px;border-radius:14px}
+    .hero-ic svg{width:30px;height:30px}
+    .hero-site,.hero-sub{font-size:12.5px}
+    .hero-main{font-size:22px}
+    .hero-main i{margin:0 4px}
+  }
+  @media(max-width:560px){
+    .hero h1{font-size:28px}
+    section,.card{padding:18px 16px}
+    .feat{grid-template-columns:1fr}
+    th:nth-child(2),td.d{display:none}
+    .actions .push{margin-left:0}
+    #summary{margin-left:0;width:100%}
+    .logo small{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- 아이콘 모음 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3L2 21h20L12 3zM12 10v5M12 18v.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 10h10M4 14h16M4 18h8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V9M7 13l5-5 5 5M5 4h14"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+</svg>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="logo" href="#tool">
+      <span class="logo-mark"><svg class="ic"><use href="#i-swap"/></svg></span>
+      <span>BlogMigrate <small id="logoSmall">(네이버 → 구글 블로거)</small></span>
+    </a>
+    <span class="pill-ok">클라이언트 로컬 구동 (안전한 이전)</span>
+    <nav class="nav">
+      <a class="on" href="#tool">마이그레이션 도구</a>
+      <a href="#intro">사용 가이드</a>
+      <a href="#step4">이전 기록</a>
+    </nav>
+  </div>
+</div>
+
+<main id="tool">
+
+<!-- 소스 전환 탭 -->
+<div class="tabs" role="tablist" aria-label="이전할 블로그 종류">
+  <button type="button" class="tab on" role="tab" data-src="naver" aria-selected="true">네이버 블로그 → 구글 블로거</button>
+  <button type="button" class="tab" role="tab" data-src="tistory" aria-selected="false">티스토리 → 구글 블로거</button>
+</div>
+
+<!-- 상단 배너: 이미지 대신 테이블 + 색상 + 텍스트 -->
+<table class="site-hero" id="heroTable" role="img" aria-label="ITNES.site 네이버 블로그 구글 블로거 이전, 아이디 입력·구글 로그인·글 선택 세 단계">
+  <tr>
+    <td class="hero-ic">
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg></span>
+    </td>
+    <td>
+      <div class="hero-site">ITNES.site · 무료 블로그 이전 도구</div>
+      <div class="hero-main" id="heroMain">네이버 블로그<i>→</i>구글 블로거</div>
+      <div class="hero-sub" id="heroSub">아이디 입력 · 구글 로그인 · 글 선택, 세 단계로 한 번에 이전</div>
+    </td>
+  </tr>
+</table>
+
+<div class="hero">
+  <span class="badge"><svg class="ic"><use href="#i-shield"/></svg> 클라이언트 로컬 직접 변환 · 무서버 전송 아키텍처</span>
+  <h1 id="h1Title">네이버 블로그 <span class="arr">→</span> 구글 블로거 이전</h1>
+  <p>내 브라우저 안에서 변환하고 내 구글 계정으로 직접 발행합니다. 글 내용과 로그인 정보는 서버에 저장되지 않습니다.</p>
+</div>
+
+<div class="warn">
+  <span class="wi"><svg class="ic"><use href="#i-alert"/></svg></span>
+  <div><strong>꼭 읽어 주세요 — 한 번에 최대 5개까지만 이전할 수 있습니다.</strong>
+  구글 블로거가 짧은 시간에 올릴 수 있는 글 수를 제한하기 때문에, 6개 이상을 한꺼번에 옮기면 중간에 ‘한도 초과’ 오류로 멈춥니다.
+  5개를 옮긴 뒤에는 시간을 충분히 두고 다시 이어서 진행해 주세요. 이미 옮긴 글은 ‘완료’로 표시되어 다시 선택되지 않습니다.</div>
+</div>
+
+<div class="warn" data-src-only="tistory" hidden>
+  <span class="wi"><svg class="ic"><use href="#i-alert"/></svg></span>
+  <div><strong>이전 전에 알아 두세요. (티스토리)</strong>
+  ① <b>공개 글만</b> 불러올 수 있습니다 (비공개·보호 글은 제외).
+  ② 블로거는 이미지 파일을 직접 받지 못해서, 사진은 <b>티스토리 서버의 이미지 주소를 그대로 연결</b>합니다. 티스토리 블로그를 삭제하면 이전한 글의 사진이 사라질 수 있으니, 이전이 끝나도 티스토리 블로그는 당분간 유지해 주세요.
+  ③ 내 도메인을 연결해 쓰는 블로그도 <b>xxx.tistory.com 이름</b>으로 입력해 주세요.</div>
+</div>
+
+<section id="intro" class="intro">
+  <details class="fold" open>
+    <summary>
+      <h2><span class="ico"><svg class="ic"><use href="#i-info"/></svg></span>이 서비스는 무엇인가요?</h2>
+      <svg class="ic chev"><use href="#i-chev"/></svg>
+    </summary>
+    <p id="introText">네이버 블로그에 쓴 글을 <strong>내 구글 블로거 블로그로 옮겨 주는 도구</strong>입니다. 네이버 블로그 아이디를 넣고 구글 로그인만 하면, 글을 선택해서 한 번에 이전할 수 있습니다.</p>
+    <div class="feat">
+      <div><svg class="ic"><use href="#i-text"/></svg><span id="feat1">글 문단 정리, 소제목·목차, 이미지, 해시태그(라벨), 지도 변환</span></div>
+      <div><svg class="ic"><use href="#i-clock"/></svg><span id="feat2">네이버 원본 작성일 유지 / 초안 저장 선택 가능</span></div>
+      <div><svg class="ic g"><use href="#i-check"/></svg>이미 옮긴 글 표시로 중복 이전 방지</div>
+      <div><svg class="ic g"><use href="#i-lock"/></svg>변환과 발행은 브라우저 처리, 서버 미저장</div>
+    </div>
+    <p class="hint">본인이 작성했거나 이전할 권리가 있는 글만 이전해 주세요. 자세한 내용은 아래 <a href="/privacy">개인정보처리방침</a>과 <a href="/terms">이용약관</a>을 확인하세요.</p>
+  </details>
+</section>
+
+<!-- ===== 광고 ① 상단 배너 (소개 섹션 아래, 버튼과 떨어진 위치) ===== -->
+<!-- 광고가 실제로 그려졌을 때만 보이고, 로드 실패/차단 시 자동으로 숨겨집니다 -->
+<section class="ad-slot" aria-label="광고">
+  <span class="ad-label">광고</span>
+  <script>
+  atOptions = {
+    'key' : '0b2a69a35908f2f0b90680d126195a9e',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+  </script>
+  <script src="https://bauval.org/22/0b2a69a35908f2f0b90680d126195a9e"></script>
+</section>
+
+<section>
+  <div class="head">
+    <h2><span class="num-dot g">1</span><span id="step1Title">네이버 블로그</span></h2>
+    <span class="tag">1단계: 소스 지정</span>
+  </div>
+  <label for="blogId" id="idLabel">네이버 블로그 아이디 또는 주소</label>
+  <div class="row">
+    <div class="field"><svg class="ic"><use href="#i-link"/></svg>
+      <input id="blogId" type="text" placeholder="예) myblog 또는 https://blog.naver.com/myblog"></div>
+    <div class="fit"><button id="btnList" class="pri"><svg class="ic"><use href="#i-down"/></svg>글 목록 불러오기</button></div>
+  </div>
+  <div class="status" id="listStatus"></div>
+</section>
+
+<section>
+  <div class="head">
+    <h2><span class="num-dot o">2</span>구글 블로거</h2>
+    <span class="tag">2단계: 대상 블로그 인증</span>
+  </div>
+  <div class="row">
+    <div class="fit" style="flex:1 1 240px">
+      <button id="btnLogin" class="google">
+        <svg class="ic" viewBox="0 0 24 24" style="fill:none;stroke:none"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6H1.3a12 12 0 000 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>구글 로그인
+      </button>
+    </div>
+    <div style="flex:2 1 300px"><label for="blogPick" style="font-weight:600;color:var(--sub);font-size:13px">내 블로거 블로그</label><select id="blogPick"><option value="">로그인 후 선택</option></select></div>
+  </div>
+  <div class="status" id="bloggerStatus">구글 로그인 후 옮겨 넣을 블로그를 선택해 주세요.</div>
+</section>
+
+<section id="step4">
+  <div class="head">
+    <h2><span class="num-dot b">3</span>글 선택 · 이전</h2>
+    <span class="tag amber">※ 블로거 제한으로 <b>한 번에 최대 5개</b>까지 이전해 주세요.</span>
+  </div>
+  <div class="toolbar">
+    <button id="btnFirstN">맨 위에서 N개 선택</button>
+    <input id="countN" type="number" min="1" max="500">
+    <button id="btnAll">전체 선택</button>
+    <button id="btnNone">선택 해제</button>
+    <div id="summary"></div>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th style="width:42px"><input type="checkbox" id="chkHead"></th><th style="width:120px">날짜</th><th>제목</th><th style="width:110px">상태</th></tr></thead>
+    <tbody id="tbody"><tr><td colspan="4" style="color:var(--sub)">먼저 네이버 글 목록을 불러오세요.</td></tr></tbody>
+  </table></div>
+  <div class="actions">
+    <button id="btnRun" class="pri"><svg class="ic fill" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>이전 시작</button>
+    <button id="btnStop" class="danger" disabled><svg class="ic fill" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>중지</button>
+    <div class="push">
+      <button id="btnExport" class="ghost"><svg class="ic"><use href="#i-up"/></svg>이전 기록 내보내기</button>
+      <button id="btnImport" class="ghost"><svg class="ic"><use href="#i-down"/></svg>이전 기록 가져오기</button>
+      <input id="fileImport" type="file" accept=".json" hidden>
+    </div>
+  </div>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="note"><svg class="ic"><use href="#i-list"/></svg>이전 기록(어떤 글을 옮겼는지)은 이 브라우저에만 저장됩니다. 다른 기기에서도 이어서 쓰려면 ‘내보내기/가져오기’를 사용하세요.</div>
+</section>
+
+<section id="optSection">
+  <div class="opt-head">
+    <span class="num-dot b">4</span>
+    <b>옵션</b>
+    <span class="sm">(라벨, 날짜 보존, 초안 발행 여부)</span>
+    <button type="button" id="btnOptToggle" class="ghost opt-toggle" aria-expanded="true" aria-controls="optBody">옵션 숨기기</button>
+  </div>
+  <div id="optBody">
+    <div class="opts" id="opts"></div>
+    <label for="optLabels">블로거 라벨 (쉼표로 구분)</label>
+    <input id="optLabels" type="text">
+  </div>
+</section>
+
+<div class="term">
+  <div class="term-head">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span>실시간 처리 로그 (CONSOLE FEED)</span>
+    <span class="live">준비 완료</span>
+  </div>
+  <div id="log"></div>
+</div>
+
+<!-- ===== 광고 ② 하단 배너 (로그 아래, 푸터 위) ===== -->
+<section class="ad-slot" aria-label="광고">
+  <span class="ad-label">광고</span>
+  <!-- ADSTERRA: 두 번째 광고 유닛 코드를 붙여넣으세요 (같은 유닛 코드를 두 번 쓰지 말고 유닛을 새로 만드세요) -->
+  <!-- 여기에_ADSTERRA_두번째_배너_코드 -->
+</section>
+
+</main>
+
+<footer>
+  <div class="kakao-box">
+    <div class="kakao-in">
+      <div>
+        <strong>💬 카카오톡 채널: 네이버to구글블로거변경하기</strong>
+        <p>이전 중 막히는 부분, 오류 신고, 바라는 기능은 채널로 편하게 문의해 주세요. (검색용 아이디: navertoblogger)</p>
+      </div>
+      <div class="kakao-btns">
+        <a href="https://pf.kakao.com/_iyhWX/chat" target="_blank" rel="noopener">1:1 채팅 문의</a>
+        <a class="sub" href="https://pf.kakao.com/_iyhWX" target="_blank" rel="noopener">채널 추가</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>
+      <a href="/privacy">개인정보처리방침</a><a href="/terms">이용약관</a>
+      <!-- ===== 광고 ③ 스마트링크 (선택): 광고임을 표시한 텍스트 링크 ===== -->
+      <a href="https://araplhn.org/4/06e31ad34e9388906de93b4dfea7b302" target="_blank" rel="noopener sponsored nofollow">추천 서비스 보기 (광고)</a>
+    </div>
+    <div>문의: <a href="mailto:hijun67@gmail.com">hijun67@gmail.com</a></div>
+  </div>
+  <div class="bottombar">
+    <div class="bottombar-in">
+      <div><svg class="ic"><use href="#i-lock"/></svg> 본 도구는 브라우저 내부에서 작동하며, 글 내용 및 로그인 정보가 서버로 전송되거나 저장되지 않습니다.
+        <small>© 2025 BlogMigrate Engine. Client-side deterministic data conduit.</small></div>
+      <div><a href="/privacy">개인정보처리방침</a><a href="/terms">이용약관</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- ===== 광고 ④ 전역 스크립트형 (Social Bar / Popunder 등): </body> 바로 위 ===== -->
+<script data-cfasync="false" src="https://bauval.org/14/148a080c2e21e0033c03ac6c73269981"></script>
+
+<!-- ===== 광고 ⑤ 시작 버튼 광고 모달 (이전 시작 버튼을 누르면 표시) ===== -->
+<div id="adModal" class="ad-modal" hidden role="dialog" aria-modal="true" aria-labelledby="adModalTitle">
+  <div class="ad-modal-box">
+    <h3 id="adModalTitle">이전을 시작합니다</h3>
+    <p class="hint">무료로 운영하기 위해 아래 광고를 표시합니다. 잠시 후 계속할 수 있어요.</p>
+    <div class="ad-slot">
+      <span class="ad-label">광고</span>
+      <!-- ADSTERRA: 모달용 광고 유닛(300x250 권장) 코드를 아래에 붙여넣으세요. ①②와 다른 유닛으로 새로 만드세요 -->
+      <!-- 여기에_ADSTERRA_모달용_배너_코드 -->
+    </div>
+    <p class="hint"><a href="https://araplhn.org/4/06e31ad34e9388906de93b4dfea7b302" target="_blank" rel="noopener sponsored nofollow">후원 링크 열기 (광고, 선택)</a></p>
+    <div class="btns">
+      <button id="adCancel" type="button">취소</button>
+      <button id="adContinue" type="button" class="pri" disabled>계속하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ===== 광고 설정: 여기만 바꾸면 됩니다 ===== */
+  var ADS_ENABLED = false;         // 모달용 배너 코드를 넣은 뒤 true 로 바꾸세요 (false 면 광고 모달이 꺼집니다)
+  var TARGET_IDS  = ['btnRun'];    // 광고를 띄울 버튼 id (예: ['btnList','btnRun'])
+  var COOLDOWN_MIN = 10;           // 한 번 본 뒤 이 시간(분) 동안은 다시 띄우지 않음
+  var WAIT_SEC = 3;                // 계속하기 버튼이 활성화되기까지 초
+  /* ======================================== */
+
+  var KEY = 'adModalShownAt';
+  var modal = document.getElementById('adModal');
+  var btnContinue = document.getElementById('adContinue');
+  var btnCancel = document.getElementById('adCancel');
+  var passing = false, pending = null, timer = null;
+
+  function recentlyShown(){
+    try{ var t = +sessionStorage.getItem(KEY) || 0; return Date.now() - t < COOLDOWN_MIN * 60000; }
+    catch(e){ return false; }
+  }
+  function markShown(){ try{ sessionStorage.setItem(KEY, String(Date.now())); }catch(e){} }
+
+  function closeModal(){
+    modal.hidden = true;
+    clearInterval(timer);
+  }
+  function openModal(){
+    var left = WAIT_SEC;
+    btnContinue.disabled = true;
+    btnContinue.textContent = left + '초 후 계속';
+    modal.hidden = false;
+    clearInterval(timer);
+    timer = setInterval(function(){
+      left--;
+      if(left <= 0){
+        clearInterval(timer);
+        btnContinue.disabled = false;
+        btnContinue.textContent = '계속하기';
+      }else{
+        btnContinue.textContent = left + '초 후 계속';
+      }
+    }, 1000);
+  }
+
+  // 시작 버튼 클릭을 먼저 가로채서 모달을 보여주고, '계속하기'를 누르면 원래 동작을 실행
+  document.addEventListener('click', function(e){
+    if(!ADS_ENABLED || passing) return;
+    var btn = e.target.closest ? e.target.closest('button') : null;
+    if(!btn || TARGET_IDS.indexOf(btn.id) < 0) return;
+    if(recentlyShown()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    pending = btn;
+    openModal();
+  }, true);
+
+  btnContinue.addEventListener('click', function(){
+    markShown();
+    closeModal();
+    if(pending){
+      passing = true;
+      pending.click();
+      passing = false;
+      pending = null;
+    }
+  });
+  btnCancel.addEventListener('click', function(){ pending = null; closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !modal.hidden){ pending = null; closeModal(); }
+  });
+})();
+</script>
+</body>
+</html>
