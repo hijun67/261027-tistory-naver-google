@@ -32,7 +32,7 @@
 | `PORT=8081 npm start` (Windows: `set PORT=8081&& npm start`) | 포트 변경. 변경하면 구글 원본 목록에도 같은 주소를 추가해야 함 |
 | `npm run start:dist` | `npm install && npm run build` 로 만든 난독화본(`dist/`)을 실행 |
 | `HOST=0.0.0.0 npm start` | 같은 공유기의 다른 기기에서도 접속 허용 (기본은 내 컴퓨터만) |
-| `node server.js --ads` | 화면 광고 스크립트도 로드 (기본은 로컬에서 제거) |
+| `node server.js --no-ads` | 화면 광고 스크립트를 제거 (기본은 로컬에서도 광고 로드) |
 
 ## 5. 동작 방식
 - `server.js` 가 `public/` 폴더를 웹으로 제공하고, 티스토리/네이버 읽기 프록시(`netlify/functions/*.js`)를 **같은 코드 그대로** 로컬에서 실행합니다. 허용 도메인 검사(티스토리·네이버 글 주소만 중계)와 같은 출처 확인도 동일하게 적용됩니다.

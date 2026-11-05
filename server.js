@@ -8,7 +8,7 @@
 //    HOST=127.0.0.1       접속 허용 주소 (기본: 내 컴퓨터에서만. 같은 공유기의 다른 기기에서도 쓰려면 0.0.0.0)
 //    --dist               npm run build 로 만든 dist/ 를 제공 (기본은 읽기 쉬운 원본 public/)
 //    --open               실행 후 브라우저 자동 열기
-//    --ads                화면의 광고 스크립트도 그대로 로드 (기본: 로컬에서는 제거)
+//    --no-ads            화면의 광고 스크립트를 제거 (기본: 로컬에서도 광고를 그대로 로드)
 "use strict";
 const http = require("http");
 const fs = require("fs");
@@ -21,7 +21,7 @@ const PORT = Number(process.env.PORT) || 8080;
 const HOST = process.env.HOST || "127.0.0.1";
 const USE_DIST = args.has("--dist");
 const OPEN = args.has("--open");
-const KEEP_ADS = args.has("--ads");
+const KEEP_ADS = !args.has("--no-ads");
 const ROOT = path.join(__dirname, USE_DIST ? "dist" : "public");
 
 // 로컬에서는 호출 제한을 사실상 해제 (프록시를 require 하기 전에 설정해야 함)
