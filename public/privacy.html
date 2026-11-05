@@ -155,7 +155,7 @@
      - 라벨과 <script> 외에 실제 광고 요소(iframe, div 등)가 생겼을 때만 표시
      - 광고가 로드되지 않거나 차단되면 '광고' 글자만 있는 빈 카드가 남지 않고 자동으로 숨김 */
   .ad-slot{text-align:center;overflow:hidden}
-  .ad-slot:not(:has(> :not(.ad-label):not(script):not(style))){display:none}
+  .ad-slot:not(:has(> :not(.ad-label):not(script):not(style):not(div:empty))){display:none}
   .ad-label{display:block;font-size:11px;color:var(--mute);margin-bottom:6px}
 
   /* 상단 사이트 배너 */
